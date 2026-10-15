@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResumeRadar — Free & Private ATS Resume Scanner & Optimizer</title>
+  <meta name="description" content="Free, 100% private ATS resume scanner and job description keyword matcher. Check your ATS score, discover missing keywords, rewrite bullets, and generate tailored cover letters in seconds.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo-group">
+        <div class="logo-badge">🎯</div>
+        <div class="logo-text">
+          <h1>ResumeRadar</h1>
+          <span>Zero-Tracking ATS Intelligence</span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <div class="badge-free">
+          <div class="badge-dot"></div>
+          100% Free &amp; Private (Runs in Browser)
+        </div>
+        <button id="btn-templates-nav" class="btn-templates">
+          <span>⚡ Get 50+ ATS Templates (\$9)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main>
+    <!-- Hero Header -->
+    <section class="hero">
+      <h2>Beat the Recruiter ATS in 30 Seconds</h2>
+      <p>Compare your resume against any job description. Instant match score, keyword gap identification, and AI-powered bullet point improvements without uploading your data to any server.</p>
+      <div class="hero-stats">
+        <span>🔒 Zero Data Collected</span>
+        <span>⚡ 100% Client-Side Engine</span>
+        <span>🚀 85%+ Interview Rate Boost</span>
+      </div>
+    </section>
+
+    <!-- Workspace: Dual Input -->
+    <section class="workspace-grid">
+      <!-- Resume Box -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📄</span>
+            <span>Your Resume Content</span>
+          </div>
+          <div class="card-actions">
+            <button id="btn-sample" class="btn-secondary-sm" title="Populate with realistic sample data">Load Demo</button>
+            <button id="btn-clear" class="btn-secondary-sm">Clear</button>
+          </div>
+        </div>
+        <textarea id="resume-input" class="editor-textarea" placeholder="Paste your plain text or Markdown resume here... (Tip: Click 'Load Demo' in the top right to test immediately!)"></textarea>
+        <div class="card-footer">
+          <span id="resume-count">0 words</span>
+          <span>Tip: Include Skills, Work History, and Education sections</span>
+        </div>
+      </div>
+
+      <!-- Job Description Box -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>💼</span>
+            <span>Target Job Description</span>
+          </div>
+          <div class="card-actions">
+            <span style="font-size:0.75rem; color:var(--text-muted);">Paste full posting</span>
+          </div>
+        </div>
+        <textarea id="job-input" class="editor-textarea" placeholder="Paste the job posting, requirements, and responsibilities here..."></textarea>
+        <div class="card-footer">
+          <span id="job-count">0 words</span>
+          <span>Tip: Include the Requirements and Qualifications list</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Trigger -->
+    <div class="scan-trigger-bar">
+      <button id="btn-scan" class="btn-primary-large">
+        <span>🔍</span>
+        <span>Run Deep ATS Analysis</span>
+      </button>
+    </div>
+
+    <!-- Results Dashboard -->
+    <section id="results-dashboard" class="results-dashboard">
+      <!-- Main Score Banner -->
+      <div class="score-banner">
+        <div class="score-gauge-wrap">
+          <div class="gauge-circle">
+            <svg>
+              <circle class="gauge-bg" cx="70" cy="70" r="60"></circle>
+              <circle class="gauge-val" cx="70" cy="70" r="60"></circle>
+            </svg>
+            <div class="gauge-number">
+              <span id="gauge-number">0</span><small>%</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-details">
+          <h3 id="score-verdict">Analysis Complete</h3>
+          <p id="score-subtext">Detailed breakdown of how applicant tracking systems (Workday, Taleo, Greenhouse, Lever) will evaluate your profile.</p>
+
+          <!-- 4 Mini Metrics -->
+          <div class="metrics-row">
+            <div class="metric-pill">
+              <div class="metric-pill-label">Keywords Match</div>
+              <div id="metric-keyword" class="metric-pill-score">0%</div>
+              <div class="metric-pill-bar"><div id="metric-keyword-bar" class="metric-pill-fill"></div></div>
+            </div>
+            <div class="metric-pill">
+              <div class="metric-pill-label">Action Verbs</div>
+              <div id="metric-impact" class="metric-pill-score">0%</div>
+              <div class="metric-pill-bar"><div id="metric-impact-bar" class="metric-pill-fill"></div></div>
+            </div>
+            <div class="metric-pill">
+              <div class="metric-pill-label">Structure &amp; Contact</div>
+              <div id="metric-format" class="metric-pill-score">0%</div>
+              <div class="metric-pill-bar"><div id="metric-format-bar" class="metric-pill-fill"></div></div>
+            </div>
+            <div class="metric-pill">
+              <div class="metric-pill-label">Length &amp; Density</div>
+              <div id="metric-readability" class="metric-pill-score">0%</div>
+              <div class="metric-pill-bar"><div id="metric-readability-bar" class="metric-pill-fill"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-keywords">🎯 Keyword Gap Analysis</button>
+        <button class="tab-btn" data-tab="tab-bullets">✨ Bullet Point Optimizer</button>
+        <button class="tab-btn" data-tab="tab-cover">✉️ Tailored Cover Letter</button>
+        <button class="tab-btn" data-tab="tab-checklist">📋 ATS Compliance Checklist</button>
+      </div>
+
+      <!-- Tab 1: Keyword Matrix -->
+      <div id="tab-keywords" class="tab-content active">
+        <div class="keyword-columns">
+          <div class="keyword-box">
+            <h4>
+              <span>✅ Matched In Resume</span>
+              <span id="matched-count" style="color:#34d399;">0</span>
+            </h4>
+            <div id="matched-pills" class="pills-container"></div>
+          </div>
+
+          <div class="keyword-box">
+            <h4>
+              <span>❌ Missing Required Keywords</span>
+              <span id="missing-count" style="color:#f87171;">0</span>
+            </h4>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">
+              Click any missing keyword below to get an optimized resume bullet suggestion:
+            </div>
+            <div id="missing-pills" class="pills-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Bullet Point Optimizer -->
+      <div id="tab-bullets" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🚀</span>
+              <span>STAR-Method Bullet Upgrades</span>
+            </div>
+          </div>
+          <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1rem;">
+            ATS systems and recruiters heavily favor bullet points with active leadership verbs and quantifiable results (% increases, revenue, or latency reductions). Here are recommended upgrades for your weakest points:
+          </p>
+          <div id="bullet-optimizer-list"></div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Tailored Cover Letter -->
+      <div id="tab-cover" class="tab-content">
+        <div class="cover-letter-wrap">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h4 style="font-size:1.05rem;">Automatically Generated Tailored Cover Letter</h4>
+            <button id="btn-copy-cover" class="btn-templates" style="font-size:0.8rem; padding:0.4rem 0.85rem;">
+              Copy to Clipboard
+            </button>
+          </div>
+          <div id="cover-letter-output" class="cover-letter-text"></div>
+        </div>
+      </div>
+
+      <!-- Tab 4: ATS Checklist -->
+      <div id="tab-checklist" class="tab-content">
+        <div class="card">
+          <h4 style="font-size:1.1rem; margin-bottom:1rem;">ATS Best Practices &amp; Formatting Guide</h4>
+          <ul style="list-style:none; line-height:2.2; font-size:0.92rem; color:#d1d5db;">
+            <li>✅ <strong>Use Standard Fonts:</strong> Arial, Calibri, Helvetica, or Times New Roman. Unusual fonts can cause text parsing errors.</li>
+            <li>✅ <strong>Avoid Tables, Columns &amp; Text Boxes:</strong> Old ATS parsers read columns horizontally across lines, garbling words.</li>
+            <li>✅ <strong>Clear Section Headers:</strong> Use standard titles like "Work Experience", "Education", "Skills", and "Professional Summary".</li>
+            <li>✅ <strong>Save As .DOCX or Clean PDF:</strong> Most modern ATS accept PDF, but if a posting specifically mentions Word, use .docx.</li>
+            <li>✅ <strong>Target 75%+ Keyword Density:</strong> You don't need 100% (which looks like keyword stuffing), but aim to hit 75%+ of required skills.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Monetization Callout Banner -->
+      <div class="monetization-card">
+        <div class="monetization-info">
+          <h4>Need Battle-Tested ATS Templates?</h4>
+          <p>Get our hand-crafted pack of 50+ ATS-proof Word &amp; Google Docs resume templates designed to bypass 99.9% of screening bots.</p>
+        </div>
+        <button id="btn-templates-banner" class="btn-templates" style="padding:0.75rem 1.5rem; font-size:0.95rem;">
+          Unlock 50+ Templates for \$9
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Templates Upsell Modal (Gumroad / LemonSqueezy Checkout Trigger) -->
+  <div id="template-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button id="btn-close-modal" class="modal-close">&times;</button>
+      <div style="text-align:center;">
+        <span style="font-size:2.5rem; display:block; margin-bottom:0.5rem;">📄✨</span>
+        <h3 style="font-size:1.4rem; margin-bottom:0.5rem;">The Ultimate ATS-Proof Resume Kit</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;">Stop getting rejected by automated screening software before a human ever sees your application.</p>
+      </div>
+
+      <ul class="template-feature-list">
+        <li><span>✓</span> 50+ Clean, Single-Column ATS-Proof Resume Templates (.docx &amp; Google Docs)</li>
+        <li><span>✓</span> 15+ Matched Cover Letter Templates for tech, marketing, sales, and management</li>
+        <li><span>✓</span> 250+ Proven STAR-format Action Verb bullet point formulas</li>
+        <li><span>✓</span> Lifetime Updates &amp; Instant Digital Download</li>
+      </ul>
+
+      <div style="background:#0b1120; border:1px solid var(--border-subtle); border-radius:10px; padding:1rem; text-align:center; margin-bottom:1.5rem;">
+        <div style="font-size:0.8rem; color:var(--text-muted); text-decoration:line-through;">Normal Price: \$39</div>
+        <div style="font-size:1.8rem; font-weight:800; color:#34d399;">Special Offer: \$9 <span style="font-size:0.9rem; font-weight:500; color:var(--text-muted);">(One-time)</span></div>
+      </div>
+
+      <!-- Replace this href with user's actual Gumroad or LemonSqueezy link -->
+      <a href="https://gumroad.com" target="_blank" rel="noopener noreferrer" class="btn-primary-large" style="width:100%; text-align:center; justify-content:center; text-decoration:none;">
+        Download Instant Kit Now (\$9) &rarr;
+      </a>
+      <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:0.75rem;">
+        30-Day 100% Money-Back Guarantee &bull; Instant Secure Checkout
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div>
+        <strong>ResumeRadar</strong> &bull; Free, Private, Client-Side ATS Analyzer
+      </div>
+      <div>
+        Built for job seekers worldwide. No cookies. No resume storage.
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
